@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(kuka_controllers)
 
+
 find_package(catkin REQUIRED COMPONENTS
   controller_interface
   control_msgs
@@ -20,33 +21,27 @@ find_package(catkin REQUIRED COMPONENTS
   pluginlib
   orocos_kdl
   gazebo_msgs
-  class_loader  
+  class_loader
 )
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX14)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+
 if(COMPILER_SUPPORTS_CXX14)
-    set(CMAKE_CXX_FLAGS "-std=c++14")
+    set(CMAKE_CXX_STANDARD 14) 
+    set(CMAKE_CXX_STANDARD_REQUIRED ON) 
 elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_FLAGS "-std=c++0x")
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
 else()
-    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++14 support. Please use a different C++ compiler.")
+    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11/14 support. Please use a different C++ compiler.")
 endif()
+
 
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 find_package(orocos_kdl REQUIRED)
-find_package(catkin REQUIRED message_generation std_msgs gazebo_msgs)
-
-
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS} 
-  ${EIGEN3_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
-  ${orocos_kdl_INCLUDE_DIRS}
-)
 
 
 add_message_files(
@@ -54,13 +49,20 @@ add_message_files(
   KukaState.msg
 )
 
-
 generate_messages(
   DEPENDENCIES
   std_msgs
   geometry_msgs
   sensor_msgs
   gazebo_msgs
+)
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${orocos_kdl_INCLUDE_DIRS}
 )
 
 catkin_package(
@@ -77,23 +79,27 @@ catkin_package(
     message_runtime
     roscpp
     pluginlib
-  INCLUDE_DIRS 
+    class_loader
+  INCLUDE_DIRS
     include
-  LIBRARIES 
+  LIBRARIES
     ${PROJECT_NAME}
 )
+
 
 add_library(${PROJECT_NAME}
   src/kuka_inverse_dynamic_controller.cpp
   src/kuka_kuka_state_controller.cpp
 )
 
+
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
-  ${Boost_LIBRARIES}       
+  ${Boost_LIBRARIES}
   ${orocos_kdl_LIBRARIES}
-  ${Eigen_LIBRARIES}
+  ${Eigen3_LIBRARIES} 
 )
+
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
@@ -117,17 +123,13 @@ install(DIRECTORY msg/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/msg)
 
 
-  if(CATKIN_ENABLE_TESTING)
-    find_package(rostest REQUIRED)
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  catkin_add_gtest(test_kuka_state_controller test/test_controller.cpp) 
 
-    catkin_add_gtest(test_kuka_state_controller
-        test/test_controller
-        )
-
-    target_link_libraries(test_kuka_state_controller 
-        ${PROJECT_NAME}
-        ${catkin_LIBRARIES}
-        ${Boost_LIBRARIES}
-        )
-
-  endif()
+  target_link_libraries(test_kuka_state_controller
+    ${PROJECT_NAME}
+    ${catkin_LIBRARIES}
+    ${Boost_LIBRARIES}
+  )
+endif()
