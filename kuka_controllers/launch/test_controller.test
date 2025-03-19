@@ -1,0 +1,6 @@
+<launch>
+
+  <test test-name="test_kuka_state_controller" 
+        pkg="kuka_controllers" 
+        type="test_kuka_state_controller" />
+</launch>
