@@ -170,3 +170,5 @@ namespace kuka_controllers{
     }
 
 } //kuka_controllers
+
+PLUGINLIB_EXPORT_CLASS(kuka_controllers::KukaStateController, controller_interface::ControllerBase)

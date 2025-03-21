@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(kuka_controllers)
 
-
 find_package(catkin REQUIRED COMPONENTS
   controller_interface
   control_msgs
@@ -18,31 +17,15 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   tf_conversions
-  pluginlib
+  pluginlib 
   orocos_kdl
   gazebo_msgs
   class_loader
 )
 
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX14)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-
-if(COMPILER_SUPPORTS_CXX14)
-    set(CMAKE_CXX_STANDARD 14) 
-    set(CMAKE_CXX_STANDARD_REQUIRED ON) 
-elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_STANDARD 11)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-else()
-    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11/14 support. Please use a different C++ compiler.")
-endif()
-
-
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 find_package(orocos_kdl REQUIRED)
-
 
 add_message_files(
   FILES
@@ -86,23 +69,23 @@ catkin_package(
     ${PROJECT_NAME}
 )
 
-
 add_library(${PROJECT_NAME}
   src/kuka_inverse_dynamic_controller.cpp
   src/kuka_kuka_state_controller.cpp
 )
 
-
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   ${orocos_kdl_LIBRARIES}
-  ${Eigen3_LIBRARIES} 
+  ${Eigen3_LIBRARIES}
 )
-
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
+install(FILES plugins/kuka_controllers_plugins.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/plugins)
 
 install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
@@ -122,10 +105,9 @@ install(DIRECTORY config/
 install(DIRECTORY msg/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/msg)
 
-
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  catkin_add_gtest(test_kuka_state_controller test/test_controller.cpp) 
+  catkin_add_gtest(test_kuka_state_controller test/test_controller.cpp)
 
   target_link_libraries(test_kuka_state_controller
     ${PROJECT_NAME}

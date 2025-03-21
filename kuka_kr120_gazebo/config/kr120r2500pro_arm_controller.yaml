@@ -55,6 +55,7 @@ joint_group_pos_controller:
   type: position_controllers/JointGroupPositionController
   joints: *robot_joints
 
+#Comment this out if dont use pkg kuka_controllers
 inverse_controller:
   type: kuka_controllers/InverseDynamicController
   root_name: base_link

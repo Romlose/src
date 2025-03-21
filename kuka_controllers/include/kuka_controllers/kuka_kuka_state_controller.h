@@ -72,6 +72,4 @@ class KukaStateController: public controller_interface::Controller<hardware_inte
             std::shared_ptr<realtime_tools::RealtimePublisher<kuka_controllers::KukaState> > realtime_pub_;
     };
 
-PLUGINLIB_EXPORT_CLASS(kuka_controllers::KukaStateController, controller_interface::ControllerBase)
-
 }

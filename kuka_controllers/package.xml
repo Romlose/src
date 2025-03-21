@@ -29,6 +29,7 @@
   <depend>gazebo_msgs</depend>
   <depend>tf_conversions</depend>
   <build_depend>pluginlib</build_depend>
+  <build_export_depend>pluginlib</build_export_depend>
   <exec_depend>pluginlib</exec_depend>
   <build_depend>orocos_kdl</build_depend>
   <exec_depend>orocos_kdl</exec_depend>

@@ -59,7 +59,5 @@ namespace kuka_controllers{
             std::vector<std::string> joint_names_;
     };
 
-PLUGINLIB_EXPORT_CLASS(kuka_controllers::InverseDynamicController, controller_interface::ControllerBase)
-
 } //kuka_controllers
 

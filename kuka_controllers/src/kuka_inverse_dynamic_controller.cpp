@@ -142,3 +142,4 @@ namespace kuka_controllers{
     }
 }
 
+PLUGINLIB_EXPORT_CLASS(kuka_controllers::InverseDynamicController, controller_interface::ControllerBase)
